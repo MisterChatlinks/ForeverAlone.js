@@ -1,0 +1,27 @@
+<!DOCTAG html>
+<html>
+	<head>
+		<script src="forever_alone.js"></script>
+		<script>
+			function init() {
+				var signPost = new forever_alone.SignPost();
+				signPost.add("index", "index.html");
+				signPost.add("item/([0-9]+)", "item.hsnip.html?id={0}");
+				signPost.add("help", "help.hsnip.html");
+				console.log(signPost);
+
+				var viewSection = document.getElementById("fa-fragment");
+				console.log(viewSection);
+
+				forever_alone.init(viewSection, signPost, "load.hsnip.html", "error.hsnip.html");
+			}
+		</script>
+		<title></title>
+	</head>
+	<body onload="init()">
+		<div id="fa-fragment">
+			<a href="#item/123">Item 123</a>
+			<a href="#help">Help</a>
+		</div>
+	</body>
+</html>
