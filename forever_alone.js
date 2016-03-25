@@ -4,31 +4,23 @@ var _fa_http = {
 		return this.getWithMinTime(url, success, fail, 0);
 	},
 	"getWithMinTime" : function (url, success, fail, minTime) {
-		console.log("get " + url);
-
 		var start = new Date().getTime();
-
 		var xHttp = new XMLHttpRequest();
-		
-		var that = this;
+		var _this = this;
 
 		xHttp.onreadystatechange = function() {
 			if (xHttp.readyState == 4) {
 				if (xHttp.status >= 200 && xHttp.status < 300) {
-					that.wait(start, minTime, function() {
-						console.log("called back");
-						console.log(xHttp);
+					_this.wait(start, minTime, function() {
 			    		success(xHttp.responseText, xHttp.status, xHttp.statusText);
 			    	});
 				} else {
-					that.wait(start, minTime, function() {
-			    		console.log("called back");
-						console.log(xHttp);
+					_this.wait(start, minTime, function() {
 			    		fail(xHttp.responseText, xHttp.status, xHttp.statusText);
 			    	});
 				}
 		    }
-		}
+		};
 		xHttp.open("GET", url, true);
 		xHttp.send();
 	},
@@ -75,7 +67,7 @@ var _fa_loadView = function(toLoad) {
 		forever_alone.viewSection.innerHTML = responseText;
 	}, function(responseText, status) {
 		_fa_showErrorView();
-	}, 5);
+	}, 1);
 };
 
 var _fa_showErrorView = function() {
@@ -92,7 +84,6 @@ var _fa_findDestinationForHash = function(hash) {
 		}
 	}
 
-	console.log("no routes for " + hash);
 	return null;
 };
 
