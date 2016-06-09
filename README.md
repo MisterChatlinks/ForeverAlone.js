@@ -4,9 +4,9 @@ A lightweight (~4KB) JavaScript library to support single page web apps
 
 # What are the concepts?
 
-1. App shell
-2. Fragment
-3. Sign posts
+1. App shell -> see https://developers.google.com/web/updates/2015/11/app-shell?hl=en
+2. Fragment -> a HTML view element that can switch out its content to show different views (other HTML elements) as required
+3. Sign post -> a map from hash locations to document locations. E.g. '#item' maps for 'item.html'
 
 # How does it work?
 
@@ -15,7 +15,8 @@ A lightweight (~4KB) JavaScript library to support single page web apps
 2. Define a "fragment" element. This can be any HTML element that will switch out its contents when the hash location for a page changes.
 3. Create a forever_alone.SignPost object using JavaScript; 'var signPost = new forever_alone.SignPost();'
 ~1. Invoke the .add() method to add routes. add() takes a hash location as its 1st argument and the location of a HTML document for its 2nd argument. I.e. 'signPost.add("error", "nonexistant.html");' will create a sign post that causes your fragment's content to change to 'domain.com/nonexistant.html' when 'domain.com/#error' is visited.
-4. Initialise forever_alone with your fragment's view element and your sign post. I.e. 'forever_alone.init(fragment, signPost);'
+4. Ensure you have a route for "#index" as ForeverAlone will redirect 'domain.com' or 'domain.com/#' to 'domain.com/#index'
+5. Initialise forever_alone with your fragment's view element and your sign post. I.e. 'forever_alone.init(fragment, signPost);'
 
 ## More advanced stuff:
 
