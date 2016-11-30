@@ -41,7 +41,7 @@ var _fa_onHashChanged = function() {
 	if(typeof forever_alone.hashChangedCallback != "function" || !forever_alone.hashChangedCallback()) {
 		var hash = window.location.hash.substr(1);
 
-		
+
 		var destination = _fa_findDestinationForHash(hash);
 		if (destination == null) {
 			_fa_showErrorView();
@@ -65,9 +65,34 @@ var _fa_loadView = function(toLoad) {
 
 	_fa_http.getWithMinTime(toLoad, function(responseText) {
 		forever_alone.viewSection.innerHTML = responseText;
+		_fa_nodeScriptReplace(forever_alone.viewSection);
+
 	}, function(responseText, status) {
 		_fa_showErrorView();
 	}, 1);
+};
+
+var _fa_nodeScriptReplace = function(node) {
+	if (node.tagName === "SCRIPT") {
+		node.parentNode.replaceChild(_fa_nodeScriptClone(node), node);
+	} else {
+		var index = 0;
+		var children = node.childNodes;
+		while (index < children.length) {
+	  	_fa_nodeScriptReplace(children[index++]);
+		}
+	}
+
+	return node;
+};
+
+var _fa_nodeScriptClone = function(node){
+	var script  = document.createElement("script");
+	script.text = node.innerHTML;
+	for(var index = node.attributes.length-1; index >= 0; index--) {
+	    script.setAttribute(node.attributes[index].name, node.attributes[index].value);
+	}
+	return script;
 };
 
 var _fa_showErrorView = function() {
@@ -130,7 +155,7 @@ var forever_alone = {
 	},
 	"onError" : function(errorCallback) {
 		this.errorCallback = errorCallback;
-	}, 
+	},
 	"onLoad" : function(loadCallback) {
 		this.loadCallback = loadCallback;
 	},
@@ -139,5 +164,5 @@ var forever_alone = {
 		this.add = function(destination, route) {
 			that[destination] = route;
 		};
-	} 
+	}
 };
