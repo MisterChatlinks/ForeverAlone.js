@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script></script>
+</head>
+<body>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My First Webpage</title>
+		<script src="forever_alone_v2.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			function init() {
+				var view = document.getElementById("fa-fragment");
+
+				let forever_Alone = ForeverAlone.getInstance();
+				let _ = forever_Alone;
+					_.add("index", "index.html")
+					_.add("item/([0-9]+)", "item.html?id={0}")
+					_.add("error", "nonexistant.html")
+					_.add(".*)", "index.html")
+
+				forever_Alone.init(view,"load.html", "error.html")
+			}
+		</script>
+	</head>
+	<body onload="init()">
+		<div id="fa-fragment">
+			<a href="#item/1">Item 1</a>
+			<a href="#item/42">Item 42</a>
+			<a href="#error">Example error</a>
+		</div>
+	</body>
+</body>
+</html>
