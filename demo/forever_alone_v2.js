@@ -95,6 +95,8 @@ class ForeverAlone {
                 this.showErrorView("Hash destination not found.");
             } else {
                 let route = ForeverAlone.signPost[destination];
+                if(hash == "") {this.loadView(route); return};
+
                 const matches = hash.match(new RegExp(destination, "i"));
                 for (let index = 1; index < matches.length; index++) {
                     const match = matches[index];
@@ -112,6 +114,8 @@ class ForeverAlone {
      * @returns {string|null} The destination if found; otherwise, null.
      */
     findDestinationForHash(hash) {
+        if(hash == "") {console.log('default pages loaded'); return "index"};
+
         for (var destination in ForeverAlone.signPost) {
             var route = ForeverAlone.signPost[destination];
 
