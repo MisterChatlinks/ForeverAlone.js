@@ -17,6 +17,7 @@
 /**
  * A singleton class that manages routing and view loading based on the URL hash.
  */
+console.log("loaded") 
 class ForeverAlone {
     // Step 1: Private static instance (only accessible inside the class)
     static #instance = null;
@@ -126,7 +127,9 @@ class ForeverAlone {
      * @param {string} view - The HTML content to display.
      */
     changeView(view) {
-        ForeverAlone.view.innerHTML = view; // Corrected to innerHTML
+        let viewer = ForeverAlone.view 
+            viewer.innerHTML = view; // Corrected to innerHTML
+            if(viewer.querySelector("SCRIPT")) loadViewWithScripts(viewer) ;
     }
 
     /**
@@ -147,8 +150,10 @@ class ForeverAlone {
         console.log("Loading view for route:", route);
         this.changeView(ForeverAlone.config.load || "Loading...");
 
-        try {
+        try {console.log("trying to view for route:", route);
+
             const responseText = await HttpHelper.getWithMinTime(route, 1);
+            console.log(responseText)
             this.changeView(responseText);
         } catch (error) {
             console.error("Error loading view:", error);
@@ -195,6 +200,7 @@ class HttpHelper {
      */
     static async getWithMinTime(url, minTime) {
         const start = new Date().getTime();
+        console.log("gettingWithMinTime")
 
         try {
             const data = await this.get(url);
@@ -230,3 +236,57 @@ class HttpHelper {
         return new Promise(resolve => setTimeout(resolve, waitTime));
     }
 }
+// function executeScriptsInElement(element) {
+//     // Check if 'element' is a valid DOM element
+//     if (!(element instanceof Element)) {
+//         console.error('Invalid element passed to executeScriptsInElement:', element);
+//         return;
+//     }
+
+//     // Find all <script> tags within the element
+//     const scripts = element.querySelectorAll('script');
+
+//     scripts.forEach(script => {
+//         if (script.src) {
+//             // External script case
+//             const externalScript = document.createElement('script');
+//             externalScript.src = script.src;
+//             document.head.appendChild(externalScript);  // Load and execute the script
+//         } else {
+//             // Inline script case
+//             try {
+//                 // Execute inline script
+//                 eval(script.textContent);
+//             } catch (error) {
+//                 console.error('Error executing inline script:', error);
+//             }
+//         }
+//     });
+// }
+
+function loadViewWithScripts(element) {
+    _fa_nodeScriptReplace(element); // This will handle script execution
+}
+
+var _fa_nodeScriptReplace = function(node) {
+	if (node.tagName === "SCRIPT") {
+		node.parentNode.replaceChild(_fa_nodeScriptClone(node), node);
+	} else {
+		var index = 0;
+		var children = node.childNodes;
+		while (index < children.length) {
+	  	_fa_nodeScriptReplace(children[index++]);
+		}
+	}
+
+	return node;
+};
+
+var _fa_nodeScriptClone = function(node){
+	var script  = document.createElement("script");
+	script.text = node.innerHTML;
+	for(var index = node.attributes.length-1; index >= 0; index--) {
+	    script.setAttribute(node.attributes[index].name, node.attributes[index].value);
+	}
+	return script;
+};

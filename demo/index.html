@@ -17,21 +17,17 @@
 
 				let forever_Alone = ForeverAlone.getInstance();
 				let _ = forever_Alone;
-					_.add("index", "index.html")
+					_.add("index", "indexcontent.html")
 					_.add("item/([0-9]+)", "item.html?id={0}")
 					_.add("error", "nonexistant.html")
-					_.add(".*)", "index.html")
+					_.add(".*)", "indexcontent.html")
 
 				forever_Alone.init(view,"load.html", "error.html")
 			}
 		</script>
 	</head>
 	<body onload="init()">
-		<div id="fa-fragment">
-			<a href="#item/1">Item 1</a>
-			<a href="#item/42">Item 42</a>
-			<a href="#error">Example error</a>
-		</div>
+		<div id="fa-fragment"></div>
 	</body>
 </body>
 </html>
