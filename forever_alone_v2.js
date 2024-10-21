@@ -240,33 +240,6 @@ class HttpHelper {
         return new Promise(resolve => setTimeout(resolve, waitTime));
     }
 }
-// function executeScriptsInElement(element) {
-//     // Check if 'element' is a valid DOM element
-//     if (!(element instanceof Element)) {
-//         console.error('Invalid element passed to executeScriptsInElement:', element);
-//         return;
-//     }
-
-//     // Find all <script> tags within the element
-//     const scripts = element.querySelectorAll('script');
-
-//     scripts.forEach(script => {
-//         if (script.src) {
-//             // External script case
-//             const externalScript = document.createElement('script');
-//             externalScript.src = script.src;
-//             document.head.appendChild(externalScript);  // Load and execute the script
-//         } else {
-//             // Inline script case
-//             try {
-//                 // Execute inline script
-//                 eval(script.textContent);
-//             } catch (error) {
-//                 console.error('Error executing inline script:', error);
-//             }
-//         }
-//     });
-// }
 
 function loadViewWithScripts(element) {
     _fa_nodeScriptReplace(element); // This will handle script execution
