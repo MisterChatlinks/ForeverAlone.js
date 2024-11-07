@@ -16,7 +16,7 @@
 /**
  * A singleton class that manages routing and view loading based on the URL hash.
  */
-console.log("loaded") 
+console.log("loaded")
 class ForeverAlone {
     // Step 1: Private static instance (only accessible inside the class)
     static #instance = null;
@@ -60,7 +60,7 @@ class ForeverAlone {
     async init(viewSection, loadViewUrl, errorViewUrl, callback = {}) {
         let loadViewContent;
         let errorViewContent;
-    
+
         try {
             loadViewContent = await HttpHelper.get(loadViewUrl);
             errorViewContent = await HttpHelper.get(errorViewUrl);
@@ -71,14 +71,14 @@ class ForeverAlone {
             }
             return; // Exit if loading views fails
         }
-    
+
         ForeverAlone.view = viewSection;
         ForeverAlone.config = { load: loadViewContent, error: errorViewContent, callback };
-    
+
         if (typeof callback.load === "function") {
             callback.load();
         }
-    
+
         this.onHashChanged(); // 1st call
     }
 
@@ -94,7 +94,7 @@ class ForeverAlone {
                 this.showErrorView("Hash destination not found.");
             } else {
                 let route = ForeverAlone.signPost[destination];
-                if(hash == "") {this.loadView(route); return};
+                if (hash == "") { this.loadView(route); return };
 
                 const matches = hash.match(new RegExp(destination, "i"));
                 for (let index = 1; index < matches.length; index++) {
@@ -113,7 +113,7 @@ class ForeverAlone {
      * @returns {string|null} The destination if found; otherwise, null.
      */
     findDestinationForHash(hash) {
-        if(hash == "") {console.log('default pages loaded'); return "index"};
+        if (hash == "") { console.log('default pages loaded'); return "index" };
 
         for (var destination in ForeverAlone.signPost) {
             var route = ForeverAlone.signPost[destination];
@@ -131,19 +131,19 @@ class ForeverAlone {
      */
     changeView(view) {
         const viewer = ForeverAlone.view;
-    
+
         if (viewer) {
             // Update the viewer's innerHTML
             viewer.innerHTML = view;
-    
+
             // Load scripts if any
             if (viewer.querySelector("script")) {
                 loadViewWithScripts(viewer);
             }
-    
+
             // Bind pseudo-events
             this.bindPseudoEvents(viewer);
-    
+
             // Dispatch custom event after the view change
             document.dispatchEvent(
                 new CustomEvent("viewChanged", { detail: view })
@@ -152,19 +152,39 @@ class ForeverAlone {
             throw new Error("The view section was not found. Please check the HTML structure of your page.");
         }
     }
-    
+
+    /**
+  * Binds pseudo-events (such as load and custom events) to elements in the view.
+  * It looks for elements with a `data-event` attribute and attaches the corresponding 
+  * event listeners and handler functions.
+  * 
+  * @param {HTMLElement} viewer - The container element that holds the view where 
+  * pseudo-events will be bound.
+  * 
+  * @exemple :
+  *  
+  *     <div data-event="load:myfunctionName; click:myfunctionName; ..."></div>
+  * 
+  */
     bindPseudoEvents(viewer) {
         const elements = viewer.querySelectorAll("[data-event]");
-    
+
         elements.forEach((el) => {
             // Get the events and functions from data-event attribute
             const events = el.getAttribute("data-event").split(";");
-    
+
+            /**
+             * Simulates an element being loaded by listening for the `viewChanged` event
+             * and triggering the appropriate handler when the DOM is ready.
+             * 
+             * @param {HTMLElement} target - The target element to apply the handler to.
+             * @param {string} handlerName - The name of the handler function to invoke.
+             */
             function simulateElementLoaded(target, handlerName) {
                 // Listen for viewChanged event and trigger the handler when the DOM is ready
                 document.addEventListener("viewChanged", function () {
                     let targetToLoad;
-    
+
                     // Check if target has an id or class to select it
                     if (target.id) {
                         targetToLoad = document.getElementById(target.id);
@@ -174,28 +194,28 @@ class ForeverAlone {
                         // If no id or class, select the element directly
                         targetToLoad = target;
                     }
-    
+
                     if (targetToLoad) {
                         console.warn("DOM loaded, executing handler");
                         // Execute the handler function
                         if (typeof window[handlerName] === "function") {
                             window[handlerName]();
-                            
                         } else {
                             console.warn(`Handler ${handlerName} is not defined.`);
                         }
                     }
-                }, {once: true});
+                }, { once: true });
             }
-    
+
+            // Iterate over each event pair and bind the appropriate handler
             events.forEach((eventPair) => {
                 const [eventType, handlerName] = eventPair.split(":").map((e) => e.trim());
-    
+
                 switch (eventType) {
                     case "load":
                         simulateElementLoaded(el, handlerName);
                         break;
-    
+
                     default:
                         // Attach the event handler to the element
                         if (eventType && handlerName && typeof window[handlerName] === "function") {
@@ -207,8 +227,6 @@ class ForeverAlone {
             });
         });
     }
-        
-    
 
     /**
      * Displays an error view when a destination cannot be found.
@@ -228,7 +246,8 @@ class ForeverAlone {
         console.log("Loading view for route:", route);
         this.changeView(ForeverAlone.config.load || "Loading...");
 
-        try {console.log("trying to view for route:", route);
+        try {
+            console.log("trying to view for route:", route);
 
             const responseText = await HttpHelper.getWithMinTime(route, 1);
             console.log(responseText)
@@ -319,25 +338,25 @@ function loadViewWithScripts(element) {
     _fa_nodeScriptReplace(element); // This will handle script execution
 }
 
-var _fa_nodeScriptReplace = function(node) {
-	if (node.tagName === "SCRIPT") {
-		node.parentNode.replaceChild(_fa_nodeScriptClone(node), node);
-	} else {
-		var index = 0;
-		var children = node.childNodes;
-		while (index < children.length) {
-	  	_fa_nodeScriptReplace(children[index++]);
-		}
-	}
+var _fa_nodeScriptReplace = function (node) {
+    if (node.tagName === "SCRIPT") {
+        node.parentNode.replaceChild(_fa_nodeScriptClone(node), node);
+    } else {
+        var index = 0;
+        var children = node.childNodes;
+        while (index < children.length) {
+            _fa_nodeScriptReplace(children[index++]);
+        }
+    }
 
-	return node;
+    return node;
 };
 
-var _fa_nodeScriptClone = function(node){
-	var script  = document.createElement("script");
-	script.text = node.innerHTML;
-	for(var index = node.attributes.length-1; index >= 0; index--) {
-	    script.setAttribute(node.attributes[index].name, node.attributes[index].value);
-	}
-	return script;
+var _fa_nodeScriptClone = function (node) {
+    var script = document.createElement("script");
+    script.text = node.innerHTML;
+    for (var index = node.attributes.length - 1; index >= 0; index--) {
+        script.setAttribute(node.attributes[index].name, node.attributes[index].value);
+    }
+    return script;
 };
