@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 /**
  * A singleton class that manages routing and view loading based on the URL hash.
  */
@@ -131,19 +130,51 @@ class ForeverAlone {
      * @param {string} view - The HTML content to display.
      */
     changeView(view) {
-        let viewer = ForeverAlone.view 
-            viewer.innerHTML = view; // Corrected to innerHTML
-            if(viewer.querySelector("SCRIPT")) loadViewWithScripts(viewer) ;
+        const viewer = ForeverAlone.view;
+        
+        if (viewer) {
+            viewer.innerHTML = view;
+
+            // If there are <script> tags, execute them
+            if (viewer.querySelector("script")) {
+                loadViewWithScripts(viewer);
+            }
+
+            bindPseudoEvents(viewer);
+
+        } else {
+            throw new Error("The view section was not found. Please check the HTML structure of your page.");
+        }
+    }    
+
+     bindPseudoEvents(viewer) {
+        const elements = viewer.querySelectorAll("[data-event]");
+        
+        elements.forEach((el) => {
+            // Get the events and functions from data-event attribute
+            const events = el.getAttribute("data-event").split(";");
+            
+            events.forEach((eventPair) => {
+                const [eventType, handlerName] = eventPair.split(":").map(e => e.trim());
+                
+                if (eventType && handlerName && typeof window[handlerName] === "function") {
+                    el.addEventListener(eventType, window[handlerName]);
+                } else {
+                    console.warn(`Handler ${handlerName} for event ${eventType} is not defined.`);
+                }
+            });
+        });
     }
+    
 
     /**
      * Displays an error view when a destination cannot be found.
      * @param {string} errorMessage - The error message to display.
      */
     showErrorView(errorMessage) {
-        console.error(errorMessage);
         const error = ForeverAlone.config.error || `Error: ${errorMessage}`;
         this.changeView(error);
+        console.error(errorMessage, error);
     }
 
     /**
