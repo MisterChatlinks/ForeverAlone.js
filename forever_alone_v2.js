@@ -131,40 +131,83 @@ class ForeverAlone {
      */
     changeView(view) {
         const viewer = ForeverAlone.view;
-        
+    
         if (viewer) {
+            // Update the viewer's innerHTML
             viewer.innerHTML = view;
-
-            // If there are <script> tags, execute them
+    
+            // Load scripts if any
             if (viewer.querySelector("script")) {
                 loadViewWithScripts(viewer);
             }
-
-            bindPseudoEvents(viewer);
-
+    
+            // Bind pseudo-events
+            this.bindPseudoEvents(viewer);
+    
+            // Dispatch custom event after the view change
+            document.dispatchEvent(
+                new CustomEvent("viewChanged", { detail: view })
+            );
         } else {
             throw new Error("The view section was not found. Please check the HTML structure of your page.");
         }
-    }    
-
-     bindPseudoEvents(viewer) {
+    }
+    
+    bindPseudoEvents(viewer) {
         const elements = viewer.querySelectorAll("[data-event]");
-        
+    
         elements.forEach((el) => {
             // Get the events and functions from data-event attribute
             const events = el.getAttribute("data-event").split(";");
-            
+    
+            function simulateElementLoaded(target, handlerName) {
+                // Listen for viewChanged event and trigger the handler when the DOM is ready
+                document.addEventListener("viewChanged", function () {
+                    let targetToLoad;
+    
+                    // Check if target has an id or class to select it
+                    if (target.id) {
+                        targetToLoad = document.getElementById(target.id);
+                    } else if (target.classList.length > 0) {
+                        targetToLoad = document.querySelector(`.${target.classList[0]}`);
+                    } else {
+                        // If no id or class, select the element directly
+                        targetToLoad = target;
+                    }
+    
+                    if (targetToLoad) {
+                        console.warn("DOM loaded, executing handler");
+                        // Execute the handler function
+                        if (typeof window[handlerName] === "function") {
+                            window[handlerName]();
+                            
+                        } else {
+                            console.warn(`Handler ${handlerName} is not defined.`);
+                        }
+                    }
+                }, {once: true});
+            }
+    
             events.forEach((eventPair) => {
-                const [eventType, handlerName] = eventPair.split(":").map(e => e.trim());
-                
-                if (eventType && handlerName && typeof window[handlerName] === "function") {
-                    el.addEventListener(eventType, window[handlerName]);
-                } else {
-                    console.warn(`Handler ${handlerName} for event ${eventType} is not defined.`);
+                const [eventType, handlerName] = eventPair.split(":").map((e) => e.trim());
+    
+                switch (eventType) {
+                    case "load":
+                        simulateElementLoaded(el, handlerName);
+                        break;
+    
+                    default:
+                        // Attach the event handler to the element
+                        if (eventType && handlerName && typeof window[handlerName] === "function") {
+                            el.addEventListener(eventType, window[handlerName]);
+                        } else {
+                            console.warn(`Handler ${handlerName} for event ${eventType} is not defined.`);
+                        }
                 }
             });
         });
     }
+        
     
 
     /**
