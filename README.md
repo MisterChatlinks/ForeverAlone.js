@@ -155,7 +155,7 @@ index.html:
 <body id="fragment-body"></body>
 <script src="/ForeverAlone.js"></script>
 <script src="/Fo_Plugin.js"></script>
-<script src="">
+<script type="text/javascript">
     // ForeverAlone.js basic setup
     const myApp = new ForeverAlone({ appShellSelector:'#fragment-body', loadDuration: 1000 });
 
@@ -179,7 +179,7 @@ item.html:
 <script type="text/javascript">
   function getNewId (){
     /* for those who dunno, we leverage on context execution of the this key word so that this refer to the html el doing the call */
-    this.href = '#home' + Math.random()
+    this.href = '#home/' + Math.random()
     this.click() 
   }
 </script>
@@ -205,5 +205,5 @@ error.html:
 
 ```html
 <h1>Whoops.</h1>
-<p>Something went wrong, <a href="#">Would you like to go home?</a></p>
+<p>Something went wrong, <a href="#home">Would you like to go home?</a></p>
 ```
