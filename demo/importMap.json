@@ -1,0 +1,6 @@
+{
+    "HelloWorld":{
+        "alias": "Hello-World",
+        "path": "/demo/js/helloWorld.js"
+    }
+}
