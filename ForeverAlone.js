@@ -31,7 +31,7 @@ class appShell {
             Router.executeCycle("onAfterRendering");
 
         } catch (error) {
-            if (err.message === "Execution halted by request") {
+            if (error.message === "Execution halted by request") {
                 console.log("Stopping current execution, origin: appShell");
                 return;
             }
@@ -56,20 +56,15 @@ class appShell {
              * Simulates an element being loaded by listening for the `viewChanged` event
              * and triggering the appropriate handler when the DOM is ready.
              * 
-             * @param {HTMLElement} target - The target element to apply the handler to.
              * @param {string} handlerName - The name of the handler function to invoke.
              */
             function simulateElementLoaded(target, handlerName) {
-                // Listen for viewChanged event and trigger the handler when the DOM is ready
-                document.addEventListener("VIEW-CHANGED", function () {
-                    console.warn("DOM loaded, executing handler");
-                    // Execute the handler function
-                    if (typeof window[handlerName] === "function") {
-                        window[handlerName]();
-                    } else {
-                        console.error(`Handler ${handlerName} is not defined.`);
-                    }
-                }, { once: true });
+                if (typeof window[handlerName] === "function") {
+                    target.addEventListener("VIEW-CHANGED", window[handlerName], {once: true})
+                    target.dispatchEvent(new CustomEvent("VIEW-CHANGED"));
+                } else {
+                    console.error(`Handler ${handlerName} is not defined.`);
+                }
             }
 
             // Iterate over each event pair and bind the appropriate handler
@@ -81,13 +76,13 @@ class appShell {
                         simulateElementLoaded(el, handlerName);
                         break;
 
-                    default:
-                        // Attach the event handler to the element
-                        if (eventType && handlerName && typeof window[handlerName] === "function") {
-                            el.addEventListener(eventType, window[handlerName]);
-                        } else {
-                            console.warn(`Handler ${handlerName} for event ${eventType} is not defined.`);
-                        }
+                default:
+                    // Attach the event handler to the element
+                    if (eventType && handlerName && typeof window[handlerName] === "function") {
+                        el.addEventListener(eventType, window[handlerName]);
+                    } else {
+                        console.warn(`Handler ${handlerName} for event ${eventType} is not defined.`);
+                    }
                 }
             });
         });

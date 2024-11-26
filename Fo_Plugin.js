@@ -50,8 +50,8 @@
         name: "Dispatch Event after rendering",
         at: "onAfterRendering",
         fn: (args) => {
-            console.log("Event: VIEW-CHANGED")
-            document.dispatchEvent(new CustomEvent("VIEW-CHANGED", args))
+            console.log("Event: VIEW-CHANGED");
+            document.dispatchEvent(new CustomEvent("VIEW-CHANGED", args));
         }
     })
     
