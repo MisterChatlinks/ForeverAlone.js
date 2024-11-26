@@ -5,10 +5,10 @@ const doc = new ForeverAlone({
 
 doc.addAll
 ([ 
-   { key: '#home', path: '/docs/views/home.html'},
-   { key: '#docs/:resource type:string', path: '/docs/views/doc.html'},
-   { key: '#err-spa', path: '/docs/views/err.html'},
-   { key: '#load-spa', path: '/docs/views/load.html'},
+   { key: '#home', path: 'views/home.html'},
+   { key: '#docs/:resource type:string', path: 'views/doc.html'},
+   { key: '#err-spa', path: 'views/err.html'},
+   { key: '#load-spa', path: 'views/load.html'},
 ])
 
 doc.init()
