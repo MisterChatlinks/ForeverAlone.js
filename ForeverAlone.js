@@ -610,14 +610,34 @@ var _fa_nodeScriptReplace = function (node) {
     return node;
 };
 
-var _fa_nodeScriptClone = function (node) {
-    var script = document.createElement("script");
-    script.text = node.innerHTML;
-    for (var index = node.attributes.length - 1; index >= 0; index--) {
-        script.setAttribute(node.attributes[index].name, node.attributes[index].value);
+let _fa_nodeScriptClone = function (node) {
+    let script = document.createElement("script");
+    let originalContent = node.innerHTML;
+
+    // Transform the script content to check variable existence
+    const transformedContent = originalContent.replace(
+        /(?<![({]\s*)(\b(?:var|let|const)\s+)(\w+)/g,
+        (_, declaration, variableName) => {
+            if (declaration.trim() === "var") {
+                return `if (typeof ${variableName} === "undefined") ${declaration} ${variableName}`;
+            } else {
+                // let and const declarations are block-scoped and require care
+                return `if (typeof ${variableName} === "undefined") ${declaration}${variableName}`;
+            }
+        }
+    );
+
+    script.text = transformedContent;
+
+    // Copy attributes from the original node
+    for (let i = node.attributes.length - 1; i >= 0; i--) {
+        script.setAttribute(node.attributes[i].name, node.attributes[i].value);
     }
+
+    node.setAttribute("data-executed", "true"); // Mark as executed
     return script;
 };
+
 
 /* Bundle Logic =================================================================> */
 
