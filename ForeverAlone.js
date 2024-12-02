@@ -623,7 +623,8 @@ let _fa_nodeScriptClone = function (node) {
                                 ? `${variableName}`  
                                 : `${declaration} ${variableName}`
             } else if (declaration.trim() === "const"){
-                return `if (typeof ${variableName} === "undefined") ${declaration} ${variableName}`;
+                // TO DO: Find a way to bypass redeclaration on const, hint : babel or arcon
+                return `${declaration} ${variableName}`;
             } 
         }
     );
