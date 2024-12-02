@@ -619,7 +619,7 @@ let _fa_nodeScriptClone = function (node) {
         /(?<![({]\s*)(\b(?:var|let|const)\s+)(\w+)/g,
         (_, declaration, variableName) => {
             if (declaration.trim() === "var" || declaration.trim() === "let") {
-                return typeof window[variableName] !== undefined 
+                return typeof window[variableName] !== 'undefined' 
                                 ? `${variableName}`  
                                 : `${declaration} ${variableName}`
             } else if (declaration.trim() === "const"){
