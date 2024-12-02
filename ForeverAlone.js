@@ -618,7 +618,9 @@ let _fa_nodeScriptClone = function (node) {
     const transformedContent = originalContent.replace(
         /(?<![({]\s*)(\b(?:var|let|const)\s+)(\w+)/g,
         (_, declaration, variableName) => {
-            if (declaration.trim() === "var") {
+            if (declaration.trim() === "var" || declaration.trim() === "let") {
+                return `${variableName}`;
+            } else if (declaration.trim() === "const"){
                 return `if (typeof ${variableName} === "undefined") ${declaration} ${variableName}`;
             } else {
                 // let and const declarations are block-scoped and require care
