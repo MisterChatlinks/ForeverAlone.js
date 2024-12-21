@@ -1243,7 +1243,6 @@ class _Fo_Component {
         if (this.node?.isFoComponent) return;
         this.node.isFoComponent = true;
 
-        // _Fo_AppRoute.signalComponentBuilding(true)
 
         this.configureComponent();
 
@@ -1254,10 +1253,8 @@ class _Fo_Component {
             this.parseComponent();
             this.buildComponent();
 
-            // _Fo_AppRoute.signalComponentBuilding(false)
             this.node.querySelector("getComponent") && this.HandleGetComponentTag();
         } else {
-            // _Fo_AppRoute.signalComponentBuilding(false)
             throw new Error(`No children detected on data-stand-alone-component ${node}`);
         }
     }
@@ -1510,8 +1507,6 @@ class _Fo_Component {
     async HandleGetComponentTag() {
         const queue = [this.node]; // Start from the root node
 
-        // _Fo_AppRoute.signalComponentBuilding(true)
-
         _Fa_DebugHelper.debugLogs({
             ref: this.debug,
             type: "log",
@@ -1575,7 +1570,6 @@ class _Fo_Component {
             });
         }
 
-        // _Fo_AppRoute.signalComponentBuilding(false)
     }
 
     /**
