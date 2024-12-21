@@ -191,3 +191,6 @@ This setup provides a foundation to build a lightweight, event-driven SPA with p
 
 
 
+
+git add .
+git commit -m "Release v1.2.1-beta"
