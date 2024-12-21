@@ -7,6 +7,7 @@ It leverages the **History API** for seamless routing, allowing dynamic updates 
 ---
 
 ## Key Features  
+
 - **Self-Contained Components**: Define reusable HTML components with encapsulated logic, state, and methods. Components are written in plain HTML, making the framework intuitive and beginner-friendly.  
 - **Event-Driven Architecture**: Handle user interactions efficiently with declarative event bindings and custom event-driven methods.  
 - **Simple State Management**: Manage and share state between components through properties and ancestor-prop lookups for easy communication.  
@@ -58,6 +59,7 @@ It leverages the **History API** for seamless routing, allowing dynamic updates 
 ---
 
 ## Example Breakdown  
+
 1. **State and Props**: Each component manages its own state while allowing for hierarchical data sharing using `useAncestorProp`.  
 2. **Event Binding**: Events like `click` are bound declaratively with attributes like `lone-event`, ensuring clean and maintainable code.  
 3. **Scoped Logic**: Methods and event-driven logic are encapsulated within the component, fostering modularity.  
@@ -75,11 +77,13 @@ Embrace the simplicity and power of **ForeverAlone.js**—your perfect companion
 Easily integrate **ForeverAlone.js** into your project by adding the script via a CDN:  
 
 ### Unminified Version
+
 ```html
 <script src="https://cdn.jsdelivr.net/gh/MisterChatlinks/ForeverAlone.js@latest/dist/foreveralone.js"></script>
 ```
 
 ### Minified Version
+
 ```html
 <script src="https://cdn.jsdelivr.net/gh/MisterChatlinks/ForeverAlone.js@latest/dist/foreveralone.min.js"></script>
 ```
@@ -93,6 +97,7 @@ Easily integrate **ForeverAlone.js** into your project by adding the script via 
 Here’s a quick demo to showcase how **ForeverAlone.js** works:
 
 ### **index.html**
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -132,20 +137,27 @@ Here’s a quick demo to showcase how **ForeverAlone.js** works:
 ### Component HTML Files  
 
 1. **`load.html`**  
+
    ```html
+
    <children>
        <p>Wait a moment, the page is loading...</p>
    </children>
+
    ```
 
 2. **`err.html`**  
+
    ```html
+
    <children>
        <p>Oops! Something went wrong. Return to the home page: <a app-link href="/home">Click here</a>.</p>
    </children>
+
    ```
 
 3. **`test.html`**  
+
    ```html
    <children>
        <p>Test successful! Nothing much to see here. <a app-link href="/home">Go to the home page?</a></p>
@@ -153,6 +165,7 @@ Here’s a quick demo to showcase how **ForeverAlone.js** works:
    ```
 
 4. **`home.html`**  
+
    ```html
    <children>
        <p>Welcome home! Navigate to other pages or explore the demo. <a app-link href="/test">Run a test?</a></p>

@@ -55,10 +55,10 @@ class _Fo_EventManager {
      * @param {Function} fn - The callback function to remove.
      */
     static off(event, fn) {
-        if (_Fo_AppManager.listener[event]) {
-            const index = _Fo_AppManager.listener[event].indexOf(fn);
+        if (this.listener[event]) {
+            const index = this.listener[event].indexOf(fn);
             if (index !== -1) {
-                _Fo_AppManager.listener[event].splice(index, 1);
+                this.listener[event].splice(index, 1);
             }
         }
     }
@@ -70,8 +70,8 @@ class _Fo_EventManager {
     * @param {...*} args - Arguments to pass to the callback functions.
     */
     static emit(event, ...args) {
-        if (_Fo_AppManager.listener[event]) {
-            _Fo_AppManager.listener[event].forEach(fn => fn(...args));
+        if (this.listener[event]) {
+            this.listener[event].forEach(fn => fn(...args));
         }
     }
 }
@@ -598,7 +598,7 @@ class _Fa_DebugHelper {
                     console.info(`%c${message}`, style);
                     break;
                 case "debug":
-                    console[trace](`%c${message}`, style);
+                    console.trace(`%c${message}`, style);
                     break;
                 default:
                     console.log(`%c${message}`, style);
@@ -740,12 +740,14 @@ class _Fo_AppRouter {
     static #appShellShape = ["render", "setFragment"]
 
     static async configure({ appShell, loadTime, pagesRef, middlewares }) {
+
         // Validate or handle the appShell
         if (!this.appShell) {
             try {
-                this.#appShellShape.forEach(shape => this.appShell[shape]);
+                this.#appShellShape.forEach(shape => appShell[shape]);
+                this.appShell = appShell;
             } catch (error) {
-                throw new Error("Fatal Error: invalid AppShell provided to the router");
+                throw new Error(`Fatal Error: invalid AppShell provided to the router, ${error}`);
             }
         } else if (this.appShell && appShell) {
             this.#debug("warn", "tentative to override appShell unauthorized");
@@ -785,7 +787,7 @@ class _Fo_AppRouter {
         }
     }
 
-    static async onUrlChange() {
+    static async onUrlChange(currentUrl) {
         console.log("yet to be implemented")
     }
 
@@ -800,14 +802,17 @@ class _Fo_AppRouter {
             return;
         }
 
-        try {
-            this.#debug("info", `URL changed: ${currentLocation}`);
-            this.location = currentLocation;
-            this.currentRoute = this.#findRoute(route => route.match(this.location));
-            this.loadingRoute = this.#findRoute(route => route.match(this.pagesRef.load));
-            this.errorRoute = this.#findRoute(route => route.match(this.pagesRef.error));
+        // try {
+            this.#debug("info", `URL changed: ${currentUrl}`);
+            this.location = currentUrl;
+            this.currentRoute = this.#findRoute(route => route.match(this.location))[0];
+            this.loadingRoute = this.#findRoute(route => route.match(this.pagesRef.load))[0];
+            this.errorRoute = this.#findRoute(route => route.match(this.pagesRef.err))[0];
 
-            if (this.loadingRoute) this.appShell.render(this.loadingRoute);
+            if (this.loadingRoute.le){ 
+                console.log(this.loadingRoute)
+                this.appShell.render(this.loadingRoute)
+            };
 
             for (const middleware of this.middlewares) {
                 const result = await middleware(this.currentRoute);
@@ -829,22 +834,24 @@ class _Fo_AppRouter {
 
             return true; // return confirmation that everything went well
 
-        } catch (error) {
-            this.#debug("error", `Error during URL change handling: ${error.message}`);
-        }
+        // } catch (error) {
+        //     this.#debug("error", `Error during URL change handling: ${error.message}`);
+        // }
     }
 
-    static isJQueryAvailable = () => typeof $ !== 'undefined';
-
+    static isJQueryAvailable = (() => { 
+        return typeof $ !== 'undefined'
+    })()
     /** Initializes the router and sets up event listeners for navigation. */
     static init() {
-        this.isJQueryAvailable()
+        this.isJQueryAvailable
             ? this.#debug("info", "JQuery detected, igniting router on JQuery Version")
             : this.#debug("info", "No JQuery detected, igniting router on standard Version");
 
+
         // Handle forward/backward navigation triggered by the browser
         window.addEventListener("popstate", () => {
-            this.isJQueryAvailable()
+            this.isJQueryAvailable == true 
                 ? _Fo_AppRouter.onUrlChange(window.location.pathname)
                 : _Fo_AppRouter.onUrlChangeStandard(window.location.pathname);
         });
@@ -860,6 +867,8 @@ class _Fo_AppRouter {
                 }
             }
         });
+
+        window.dispatchEvent(new Event("popstate"))
     }
 
 
@@ -2404,14 +2413,23 @@ class foreveralone extends _Fo_AppJWT {
  * Delegates to `_Fo_AppRouter.configure`.
  * @type {Function}
  */
-foreveralone.configure = _Fo_AppRouter.configure;
+foreveralone.configure = ({ appShell, loadTime, pagesRef, middlewares })=>{
+     config = { loadTime: loadTime, pagesRef: pagesRef, middlewares: middlewares }
+
+     if(appShell){
+        _Fo_AppShell.setFragment(appShell);
+        config.appShell = _Fo_AppShell;
+     }
+
+    _Fo_AppRouter.configure(config);
+} 
 
 /**
  * Initialize the router for the ForeverAlone app.
  * Delegates to `_Fo_AppRouter.init`.
  * @type {Function}
  */
-foreveralone.init = _Fo_AppRouter.init;
+foreveralone.init = ()=> _Fo_AppRouter.init();
 
 /**
  * Add middleware to the ForeverAlone app.
@@ -2465,7 +2483,7 @@ foreveralone.useMiddleware = (middleware) => {
  * @param {string} [routes[].method] - HTTP method for the route.
  * @param {Object} [routes[].body] - Request body for the route.
  */
-foreveralone.addRoutes = ([{ key, path, children, props, headers = null, method = null, body = null }] = routes) => {
+foreveralone.addRoutes = (routes) => {
     foreveralone.dfs({
         node: routes,
         predicates: [
@@ -2522,5 +2540,5 @@ foreveralone.addRoutes = ([{ key, path, children, props, headers = null, method 
 };  
 
 
-
+_Fa_DebugHelper.toggleDebugAllTrue()
 
