@@ -802,15 +802,15 @@ class _Fo_AppRouter {
             return;
         }
 
-        // try {
+        try {
             this.#debug("info", `URL changed: ${currentUrl}`);
             this.location = currentUrl;
             this.currentRoute = this.#findRoute(route => route.match(this.location))[0];
             this.loadingRoute = this.#findRoute(route => route.match(this.pagesRef.load))[0];
             this.errorRoute = this.#findRoute(route => route.match(this.pagesRef.err))[0];
 
-            if (this.loadingRoute.le){ 
-                console.log(this.loadingRoute)
+            if (this.loadingRoute && this.loadTime > 0){ 
+                this.#debug("log", `Requesting transition, with loading route`,this.loadingRoute)
                 this.appShell.render(this.loadingRoute)
             };
 
@@ -834,9 +834,9 @@ class _Fo_AppRouter {
 
             return true; // return confirmation that everything went well
 
-        // } catch (error) {
-        //     this.#debug("error", `Error during URL change handling: ${error.message}`);
-        // }
+        } catch (error) {
+            this.#debug("error", `Error during URL change handling: ${error.message}`);
+        }
     }
 
     static isJQueryAvailable = (() => { 

@@ -2,7 +2,7 @@ foreveralone.configure({
     appShell: 'foreveralone-docs-app',
     pagesRef: {
         root: "/home",
-        load: "/loading...",
+        load: "/loading",
         err: "/error"
     }
 })
@@ -15,7 +15,7 @@ foreveralone.addRoutes([
             { key: "/:documentation type:string" },
         ]
     },
-    { key: "/loading...", path: "/doc/views/load.html" },
+    { key: "/loading", path: "/doc/views/load.html" },
     { key: "/error", path: "/doc/views/error.html" },
 ])
 
