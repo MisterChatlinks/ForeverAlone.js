@@ -10,13 +10,13 @@ foreveralone.configure({
 foreveralone.addRoutes([
     { key: "/home", path: "/doc/views/home.html" },
     {
-        key: "/docs", path: "./views/docs.html",
+        key: "/docs", path: "/doc/views/docs.html",
         children: [
-            { key: "/:documentation-required type:string" },
+            { key: "/:documentation type:string" },
         ]
     },
-    { key: "/loading", path: "./views/load.html" },
-    { key: "/error", path: "./views/home.html" },
+    { key: "/loading...", path: "/doc/views/load.html" },
+    { key: "/error", path: "/doc/views/error.html" },
 ])
 
 foreveralone.init()

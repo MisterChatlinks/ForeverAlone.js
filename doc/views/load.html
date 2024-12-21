@@ -1,0 +1,26 @@
+<children>
+    <style>
+        .spin-loader{
+            --b-transp: 10px transparent solid;
+
+            width: 100px;
+            height: 100px;
+            animation: spin 2s linear infinite;
+            border: 10px solid rgb(0, 21, 255);
+            border-top: var(--b-transp) ;
+            border-bottom: var(--b-transp);
+            border-radius: 50%;
+            margin: auto;
+        }
+
+        @keyframes spin{
+            0%{
+                transform: rotateZ(0deg);
+            }   
+            100%{
+                transform: rotateZ(360deg);
+            }
+        }
+    </style>
+    <div class="spin-loader"></div>
+</children>
