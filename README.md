@@ -13,4 +13,4 @@ Include the ForeverAlone.js script in your project:
 ```
 
 Replace `"latest"` with the desired version if needed for version control.
-```  
+
