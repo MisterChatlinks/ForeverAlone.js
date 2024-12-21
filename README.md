@@ -188,9 +188,3 @@ Here’s a quick demo to showcase how **ForeverAlone.js** works:
 ---
 
 This setup provides a foundation to build a lightweight, event-driven SPA with plain HTML and JavaScript. Customize the app further by extending the routes or creating more complex components. 🎉
-
-
-
-
-git add .
-git commit -m "Release v1.2.1-beta"
