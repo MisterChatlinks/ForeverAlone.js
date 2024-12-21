@@ -1027,44 +1027,56 @@ class _Fo_AppRoute {
 
     async render() {
         this.debug("info", `route ${this.key} requested`);
-
+    
+        // Return existing component if already rendered
         if (this.component) return this.component;
-
+    
         const { data, error } = await this.fetch();
-
+    
         if (error) {
-            this.debug("error", `Error fetching route "${this.key}"`)
+            this.debug("error", `Error fetching route "${this.key}"`);
             return null;
-        } else {
-            let component = document.createElement("div");
-            component.setAttribute(_Fo_Component.keyword["component"], "")
-            component.innerHTML = data;
-            component.props = { ...this.props }
-
-
-            let checkReadinessAt = 0;
-
-            let Observer = new MutationObserver(() => checkReadinessAt += 50);
-            Observer.observe(component, {
-                childList: true,
-                subtree: true,
-            })
-
-            new _Fo_Component({ node: component });
-
-            while (checkReadinessAt != 0) {
-                await new Promise(resolve => setTimeout(() => {
-                    if (checkReadinessAt === 0) resolve
-                    else checkReadinessAt -= 50
-                }, 50))
-            }
-
-            Observer.disconnect();
-
-            this.component = component;
-            return this.component
         }
+    
+        // Create and configure the component container
+        const component = document.createElement("div");
+        component.setAttribute(_Fo_Component.keyword["component"], ""); // Custom attribute
+        component.setAttribute("view-container", ""); // Decorative attribute for developers
+        component.style.cssText = "width: 100%; height: 100%; margin: 0; padding: 0;"; // Inline styles
+        component.innerHTML = data; // Set content
+        component.props = { ...this.props }; // Attach props
+    
+        // Monitor readiness of the component's child nodes
+        let readinessTimer = 0;
+    
+        const observer = new MutationObserver(() => {
+            readinessTimer += 50;
+        });
+    
+        observer.observe(component, {
+            childList: true,
+            subtree: true,
+        });
+    
+        // Initialize component logic
+        new _Fo_Component({ node: component });
+    
+        // Wait for readiness check to complete
+        while (readinessTimer !== 0) {
+            await new Promise(resolve => setTimeout(() => {
+                if (readinessTimer === 0) resolve();
+                else readinessTimer -= 50;
+            }, 50));
+        }
+    
+        // Stop observing mutations
+        observer.disconnect();
+    
+        // Cache and return the rendered component
+        this.component = component;
+        return this.component;
     }
+    
 
     cloneWithListeners(element) {
         const clone = element.cloneNode(true);
