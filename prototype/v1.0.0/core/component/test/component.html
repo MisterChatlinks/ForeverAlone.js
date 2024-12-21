@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header data-stand-alone-component>
+        <props
+            state='{ "log": "log" }'
+            root ='[ {"link": "link test"},  {"link": "link test 2"} ]'
+        ></props>
+        <methods
+            test="()=>{ console.log(this); }"
+    
+            findElementById="({ id, callback })=>{
+                let stack = []
+                let current = ()=> stack[stack.length - 1]
+                stack.push(this.props.root);
+                while(stack.length != 0){
+                    if(current().id === id) return current;
+                    if(current()?.children){
+                        stack = [...current()?.children, ...stack];
+                    }
+                    stack.pop();
+                }
+                console.warn('No match found for element with id ', id);
+            }"
+    
+            findElementThatMatch = "(predicate)=>{
+                let stack = []
+                let match = []
+                let current = ()=> stack[stack.length - 1]
+                stack.push(this.props.root)
+                while(stack.length != 0){
+                    if(predicate(current()) == true) match.push(current());
+                    if(current()?.children){
+                        stack = [...current()?.children, ...stack];
+                    }
+                    stack.pop();
+                }
+                return match.length > 0 
+                            ? match 
+                            : (()=>{ console.warn('No match found for element with id ', id); return null; })()
+            }"
+
+            setNav ="()=>{
+                return  `<li> liste </li>`
+            }"
+            
+        ></methods>
+    
+        <eventMethods
+            emphasize = "()=>{
+                console.log('test success');
+                this.style.border = '2px solid red';
+            }"
+            deemphasize = "()=>{
+                this.style.border = '';
+            }"
+        ></eventMethods>
+    
+        <children>
+            <div>
+                {{ test || 'best' }}
+                {{ state.log ? 'yes state possess the props "log"' : 'yes state possess the props "log"' }}
+                <h1 lone-event="mouseenter:emphasize;mouseleave:deemphasize">My App {{ setNav() }} </h1>
+                {{ forDataIn(root, "<li lone-event="mouseenter:emphasize;mouseleave:deemphasize"> value.link </li>") }}
+            </div>
+            <getComponent src="getcomponent.html"/>
+        </children>
+    </header>
+    <script src="../component.js"></script>
+    <script>
+        new _Fo_Component({node: document.querySelector('header[data-stand-alone-component]')});
+    </script>
+</body>
+</html>
