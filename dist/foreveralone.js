@@ -2654,8 +2654,9 @@ ForeverAlone.routeTransformer = (routes) => {
             if (typeof routes[node] == "function") {
                 routes[node] = routes[node]();
             }
+            
             routes[node].key = routes[node].type ? `${node} type:${routes[node].type}` : node;
-            routes[node] = {...routes[node], ...( routes[node].option || {} )  }
+            routes[node] = { ...routes[node], ...( routes[node].option || {} ) }
 
             if(routes[node].content){
                 routes[node].path = routes[node].content;
@@ -2666,7 +2667,7 @@ ForeverAlone.routeTransformer = (routes) => {
             delete routes[node].content;
 
             if(routes[node].children){
-                routes[node].children = parseRoutes(routes[node].children)
+                routes[node].children = parseRoutes(routes[node].children);
             }
             result.push(routes[node]);
         }
