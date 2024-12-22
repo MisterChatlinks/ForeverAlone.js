@@ -2675,5 +2675,12 @@ ForeverAlone.routeTransformer = (routes) => {
     return result;
 }
 
+ForeverAlone.initRoutes = (routes) =>
+    {
+    ForeverAlone.addRoutes(
+        ForeverAlone.routeTransformer(routes)
+    )
+}
+
 _Fa_DebugHelper.toggleDebugAllTrue()
 
