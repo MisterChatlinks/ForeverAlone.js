@@ -115,7 +115,7 @@ class _Fo_UtilityFunc extends _Fo_EventManager {
             });
         }
         else {
-            console.log(`foreveralone.customEvent log, element with selector ${selector} not found`);
+            console.log(`ForeverAlone.customEvent log, element with selector ${selector} not found`);
         }
     };
 
@@ -132,12 +132,12 @@ class _Fo_UtilityFunc extends _Fo_EventManager {
         let canContinue = true;
         while (stack.length > 0) {
             const current = stack.pop();
-            console.log(`foreveralone.dfs log, node current explored ${current}`);
+            console.log(`ForeverAlone.dfs log, node current explored ${current}`);
             predicates.forEach((predicate) => {
                 const result = predicate(current);
                 if (typeof result === "boolean") {
                     canContinue = false;
-                    console.log(`foreveralone.dfs log, execution ended on demand`);
+                    console.log(`ForeverAlone.dfs log, execution ended on demand`);
                 }
                 if (Array.isArray(result) && canContinue) {
                     stack.push(...result);
@@ -661,7 +661,7 @@ class _Fa_DebugHelper_Styles {
 class _Fo_NavigationHelper extends _Fo_UtilityFunc {
     static debug = _Fa_DebugHelper.debugReference("_Fo_NavigationHelper");
 
-    static go(routeName) {
+    static navigate(routeName) {
         if (typeof routeName == "string") {
             window.history.pushState({}, "", routeName)
         } else {
@@ -718,9 +718,9 @@ class _Fo_AppShell {
         if (this.#fragment) {
             const result = await route.render();
             if (result) {
-                foreveralone.clean(this.#fragment);
+                ForeverAlone.clean(this.#fragment);
                 this.#fragment.appendChild(result);
-                foreveralone.emit("app:viewChanged");
+                ForeverAlone.emit("app:viewChanged");
                 return true; // return confirmation that everything went well
 
             } else throw new Error("Fatal Error: Error while requesting route rendering")
@@ -1014,9 +1014,10 @@ class _Fo_AppRoute {
 
     debug = _Fa_DebugHelper.debugReference("_Fo_AppRoute")
 
-    constructor({ key, path, children, props, headers = null, method = null, body = null }) {
+    constructor({ key, path, title, children, props, headers = null, method = null, body = null }) {
         this.key = key;
         this.path = path;
+        this.title = title;
         this.headers = headers;
         this.props = props;
         this.method = method;
@@ -2218,7 +2219,7 @@ class _Fo_AppState extends _Fo_UtilityFunc {
             }
         });
 
-        foreveralone.on("app:viewChanged", () => {
+        ForeverAlone.on("app:viewChanged", () => {
             Object.keys(this.#state).forEach(key => {
                 document.querySelectorAll(`[bind-state="${key}"]`).forEach((el) => {
                     el.textContent = this.#state[key] || el.getAttribute(`${key}-default`) || "";
@@ -2398,12 +2399,12 @@ class _Fo_AppJWT extends _Fo_AppState {
  * Class representing the core application logic of ForeverAlone SPA.
  * Extends the `_Fo_AppJWT` base class to include app-specific routing and middleware logic.
  */
-class foreveralone extends _Fo_AppJWT {
+class ForeverAlone extends _Fo_AppJWT {
     /**
      * Debugging utility for ForeverAlone class.
      * @type {Function}
      */
-    static debug = _Fa_DebugHelper.debugReference("foreveralone");
+    static debug = _Fa_DebugHelper.debugReference("ForeverAlone");
 
     /**
      * Constructor for ForeverAlone class.
@@ -2419,7 +2420,7 @@ class foreveralone extends _Fo_AppJWT {
  * Delegates to `_Fo_AppRouter.configure`.
  * @type {Function}
  */
-foreveralone.configure = ({ appShell, loadTime, pagesRef, middlewares })=>{
+ForeverAlone.configure = ({ appShell, loadTime, pagesRef, middlewares })=>{
      config = { loadTime: loadTime, pagesRef: pagesRef, middlewares: middlewares }
 
      if(appShell){
@@ -2432,45 +2433,45 @@ foreveralone.configure = ({ appShell, loadTime, pagesRef, middlewares })=>{
 
 /**
  * Initialize the router for the ForeverAlone app.
- * Delegates to `_Fo_AppRouter.init`.
+ * Delegates to `_Fo_AppRouter.initApp`.
  * @type {Function}
  */
-foreveralone.init = ()=> _Fo_AppRouter.init();
+ForeverAlone.initApp = ()=> _Fo_AppRouter.init();
 
 /**
  * Add middleware to the ForeverAlone app.
  * Delegates to `_Fo_AppRouter.use`.
  * @type {Function}
  */
-foreveralone.use = _Fo_AppRouter.use;
+ForeverAlone.use = _Fo_AppRouter.use;
 
 /**
  * Register HTTP methods for the app.
  * Delegates to `_Fo_AppRouter.registeredMethods`.
  * @type {Function}
  */
-foreveralone.registerMethods = _Fo_AppRouter.registeredMethods;
+ForeverAlone.registerMethods = _Fo_AppRouter.registeredMethods;
 
 /**
  * Extend the app's lifecycle methods.
  * Delegates to `_Fo_AppRouter.executeLifeCycle`.
  * @type {Function}
  */
-foreveralone.extendLifeCycle = _Fo_AppRouter.executeLifeCycle;
+ForeverAlone.extendLifeCycle = _Fo_AppRouter.executeLifeCycle;
 
 /**
  * Application variables or arguments for ForeverAlone app.
  * Delegates to `_Fo_AppRouter.args`.
  * @type {Object}
  */
-foreveralone.appVar = _Fo_AppRouter.args;
+ForeverAlone.appVar = _Fo_AppRouter.args;
 
 /**
  * Add middleware function to the app.
  * @param {Function} middleware - Middleware function to execute during routing.
  * @throws {Error} Throws an error if the middleware is not a function.
  */
-foreveralone.useMiddleware = (middleware) => {
+ForeverAlone.useMiddleware = (middleware) => {
     if (typeof middleware == "function") {
         _Fo_AppRouter.middlewares.push(middleware);
     } else {
@@ -2489,8 +2490,8 @@ foreveralone.useMiddleware = (middleware) => {
  * @param {string} [routes[].method] - HTTP method for the route.
  * @param {Object} [routes[].body] - Request body for the route.
  */
-foreveralone.addRoutes = (routes) => {
-    foreveralone.dfs({
+ForeverAlone.addRoutes = (routes) => {
+    ForeverAlone.dfs({
         node: routes,
         predicates: [
             /**
