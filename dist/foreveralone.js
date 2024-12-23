@@ -2534,7 +2534,7 @@ ForeverAlone.addRoutes = (routes) => {
 
                         // Tweak the child props based on the parent
                         children = children.map((child) => {
-                            if (!child.path) child.path = node.path;
+                            if (!child.path || child.path == null ) child.path = node.path;
                             child.key = `${node.key.replace(/\/$/, '')}/${child.key.replace(/^\//, '')}`;
                             child.props = { ...child?.props, ...node?.props };
                             return child;
