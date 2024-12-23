@@ -2450,7 +2450,7 @@ ForeverAlone.initApp = () => {
         defaultAppUrl.splice(removePart, 1);
     }
     const baseUrl = defaultAppUrl.join("/");
-    this.debug("info", `Default App URL: ${baseUrl} (from window.location.href)`)
+    ForeverAlone.debug("info", `Default App URL: ${baseUrl} (from window.location.href)`)
     // Backup the original fetch function
     const defaultFetchApi = window.fetch;
 
@@ -2540,7 +2540,7 @@ ForeverAlone.addRoutes = (routes) => {
                 if (node?.path && node.key) {
                     let road = new _Fo_AppRoute(node);
                     _Fo_AppRouter.addRoute(road);
-                } else this.debug(
+                } else ForeverAlone.debug(
                     "warn", `Invalid route: ${JSON.stringify(node)}`
                 );
             },
