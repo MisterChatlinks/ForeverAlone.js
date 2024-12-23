@@ -16,15 +16,15 @@ ForeverAlone.configure(config);
 // });
 
 ForeverAlone.addRoutes([
-    { key: "/home", path: "/docs/views/home.html" },
+    { key: "/home", path: "/views/home.html" },
     {
-        key: "/docs", path: "/docs/views/docs.html",
+        key: "/docs", path: "/views/docs.html",
         children: [
             { key: "/:documentation type:string" },
         ]
     },
-    { key: "/loading", path: "/docs/views/load.html" },
-    { key: "/error", path: "/docs/views/error.html" },
+    { key: "/loading", path: "/views/load.html" },
+    { key: "/error", path: "/views/error.html" },
 ])
 
 
