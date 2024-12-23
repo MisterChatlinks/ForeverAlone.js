@@ -2442,7 +2442,39 @@ ForeverAlone.configure = ({ appShell, loadTime, pagesRef, middlewares })=>{
  * Delegates to `_Fo_AppRouter.initApp`.
  * @type {Function}
  */
-ForeverAlone.initApp = ()=> _Fo_AppRouter.init();
+ForeverAlone.initApp = () => {
+    // Construct the base URL
+    let defaultAppUrl = window.location.href.split("/");
+    const removePart = defaultAppUrl.indexOf(".html");
+    if (removePart > -1) {
+        defaultAppUrl.splice(removePart, 1);
+    }
+    const baseUrl = defaultAppUrl.join("/");
+
+    // Backup the original fetch function
+    const defaultFetchApi = window.fetch;
+
+    // Override fetch
+    window.fetch = (input, init) => {
+        let url = typeof input === "string" ? input : input.url;
+
+        // Resolve relative URLs
+        if (url.indexOf("http") === -1 && (url.startsWith("/") || url.startsWith("./"))) {
+            url = `${baseUrl}${url.startsWith("/") ? url : `/${url}`}`;
+            if (typeof input === "string") {
+                input = url;
+            } else {
+                input = new Request(url, input);
+            }
+        }
+
+        // Call the original fetch function
+        return defaultFetchApi(input, init);
+    };
+
+    // Initialize the app router
+    _Fo_AppRouter.init();
+};
 
 /**
  * Add middleware to the ForeverAlone app.
