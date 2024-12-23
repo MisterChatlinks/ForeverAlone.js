@@ -2450,7 +2450,7 @@ ForeverAlone.initApp = () => {
         defaultAppUrl.splice(removePart, 1);
     }
     const baseUrl = defaultAppUrl.join("/");
-    this.debug(
+    this.#debug(
         "info",
         `Default App URL: ${baseUrl} (from window.location.href)`,
     )
