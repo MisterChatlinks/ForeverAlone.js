@@ -2450,7 +2450,10 @@ ForeverAlone.initApp = () => {
         defaultAppUrl.splice(removePart, 1);
     }
     const baseUrl = defaultAppUrl.join("/");
-
+    this.debug(
+        "info",
+        `Default App URL: ${baseUrl} (from window.location.href)`,
+    )
     // Backup the original fetch function
     const defaultFetchApi = window.fetch;
 
