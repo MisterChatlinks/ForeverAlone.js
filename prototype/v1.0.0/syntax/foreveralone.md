@@ -110,6 +110,25 @@ foreveralone.addAll([
 - foreveralone.refresh() refreshes the current route
 - foreveralone.getHistory() returns the current history stack
 
+## Route declaration
+
+```javascript
+let routes = [
+    { key: "/home", path: "home-path", ...option, children:[
+        { key: "/u", path: "u-path", ...option, children: [], middleware: [
+            ()=>{
+                console.log("middleware 1");
+            }
+        ] },
+        { key: `/:article type:${type}`, path: "home-path", ...option, children: [
+            { key: "deprecated", path: "deprecated-path", ...option, children: [] }
+        ] }
+    ]}
+]
+
+ForeverAlone.addRoutes(routes)
+```
+
 ## Enhanced Route declaration
 
 ```javascript
@@ -188,18 +207,4 @@ function _renderIsDeprecatedArticle() {
         }
     };
 }
-
-// to 
-
-let routes = [
-    { key: "/home", path: "home-path", ...option, children:[
-        { key: "/u", path: "u-path", ...option, children: [] },
-        { key: `/:article type:${type}`, path: "home-path", ...option, children: [
-            { key: "deprecated", path: "deprecated-path", ...option, children: [] }
-        ] }
-    ]}
-]
-
-ForeverAlone.addRoute(routes)
-
 ```
